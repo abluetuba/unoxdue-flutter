@@ -3,6 +3,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+//const String _API = "api.football-data.org";
+const String _API = "localhost:8080";
+
+const String _API_KEY = "d4a62e8fd0e74363a70ad3bd67646d19";
+
+Future<Map> fetchData() async {
+  final response = await http.get(
+      Uri.https(_API, "/v2/competitions/SA/matches"),
+      headers: {"X-Auth-Token": _API_KEY});
+  if (response.statusCode == 200) {
+    Map<String, dynamic> data = jsonDecode(response.body);
+    return data;
+  } else {
+    throw Exception('Failed to fetch data');
+  }
+}
+
 void main() {
   runApp(MyApp());
 }
@@ -25,7 +42,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'unoXdue'),
     );
   }
 }
@@ -49,21 +66,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future<Map> futureData;
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = fetchData();
+  }
+
   int _counter = 0;
-  String _title = "Fetch something first";
+  String _data = "Fetch something first";
 
   Future<Map> fetchData() async {
-    final response = await http.get(Uri.https(
-        'jsonplaceholder.typicode.com', 'todos/${(_counter % 2) + 1}'));
+    final response = await http.get(
+        //Uri.https(_API, "/v2/competitions/SA/matches"),
+        Uri.http(_API, "matches.json"));
+    //headers: {"X-Auth-Token": _API_KEY});
     if (response.statusCode == 200) {
-      Map<String, dynamic> todo = jsonDecode(response.body);
-      return todo;
+      Map<String, dynamic> data = jsonDecode(response.body);
+      return data;
     } else {
       throw Exception('Failed to fetch data');
     }
   }
 
-  void _incrementCounter() async {
+  /*void _incrementCounter() async {
     var data = await fetchData();
     //print("id: ${data['id']}, title: ${data['title']}");
 
@@ -74,9 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      _title = data['title'];
+      _data = data['matches'][0]['season']['currentMatchday'].toString();
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -113,21 +140,28 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
+              'unoXdue',
               style: Theme.of(context).textTheme.headline4,
             ),
-            Text('$_title')
+            //Text('$_data'),
+            FutureBuilder<Map>(
+                future: futureData,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return CircularProgressIndicator();
+                })
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),*/ // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
