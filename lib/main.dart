@@ -20,6 +20,32 @@ Future<Map> fetchData() async {
   }
 }
 
+class Match extends StatelessWidget {
+  const Match(
+      {Key key, this.homeTeam, this.awayTeam, this.homeScore, this.awayScore})
+      : super(key: key);
+
+  final String homeTeam;
+  final String awayTeam;
+  final int homeScore;
+  final int awayScore;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+        child: Text("$homeTeam", textAlign: TextAlign.end)),
+       
+        Container(padding: EdgeInsets.all(8.0), child: Text("$homeScore - $awayScore", textAlign: TextAlign.center,)),
+         Expanded(
+        child: Text("$awayTeam", textAlign: TextAlign.start)),
+
+      ],
+    );
+  }
+}
+
 void main() {
   runApp(MyApp());
 }
@@ -74,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
     futureData = fetchData();
   }
 
-  int _counter = 0;
-  String _data = "Fetch something first";
+  //int _counter = 0;
+  //String _data = "Fetch something first";
 
   Future<Map> fetchData() async {
     final response = await http.get(
@@ -144,11 +170,13 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             //Text('$_data'),
+            Match(homeTeam: "psg", awayTeam: "city", homeScore: 1, awayScore: 0),
             FutureBuilder<Map>(
                 future: futureData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
+                    return Text(
+                        "${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
