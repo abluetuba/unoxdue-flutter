@@ -113,6 +113,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<Map> futureData;
+  int _visibleMatchday;
 
   @override
   void initState() {
@@ -130,12 +131,29 @@ class _MyHomePageState extends State<MyHomePage> {
     //headers: {"X-Auth-Token": _API_KEY});
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
+      setVisibleMatchday(data["matches"][0]["season"]["currentMatchday"]);
       return data;
     } else {
       throw Exception('Failed to fetch data');
     }
   }
 
+  void setVisibleMatchday(int visibleMatchday) {
+    setState(() {
+      _visibleMatchday = visibleMatchday;
+    });
+  }
+
+  void previousMatchday() {
+    setState(() {
+      _visibleMatchday--;
+    });
+  }
+    void nextMatchday() {
+    setState(() {
+      _visibleMatchday++;
+    });
+  }
   /*void _incrementCounter() async {
     var data = await fetchData();
     //print("id: ${data['id']}, title: ${data['title']}");
@@ -185,11 +203,23 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            /*Text(
               'unoXdue',
               style: Theme.of(context).textTheme.headline4,
-            ),
-            //Text('$_data'),
+            ),*/
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                GestureDetector(
+                  child: Text("<<"), 
+                  onTap: previousMatchday
+                ),
+                Text('Giornata $_visibleMatchday'),
+                GestureDetector(
+                  child: Text(">>"), 
+                  onTap: nextMatchday
+                ),
+              ]),
             FutureBuilder<Map>(
                 future: futureData,
                 builder: (context, snapshot) {
@@ -197,7 +227,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     //return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
                     return Matches(
                         matches: snapshot.data["matches"]
-                            .where((match) => match["matchday"] == 33)
+                            .where((match) =>
+                                match["matchday"] == _visibleMatchday)
                             .toList());
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
