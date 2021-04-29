@@ -34,14 +34,34 @@ class Match extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Expanded(
-        child: Text("$homeTeam", textAlign: TextAlign.end)),
-       
-        Container(padding: EdgeInsets.all(8.0), child: Text("$homeScore - $awayScore", textAlign: TextAlign.center,)),
-         Expanded(
-        child: Text("$awayTeam", textAlign: TextAlign.start)),
-
+        Expanded(child: Text("$homeTeam", textAlign: TextAlign.end)),
+        Container(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "$homeScore - $awayScore",
+              textAlign: TextAlign.center,
+            )),
+        Expanded(child: Text("$awayTeam", textAlign: TextAlign.start)),
       ],
+    );
+  }
+}
+
+class Matches extends StatelessWidget {
+  const Matches({Key key, this.matches}) : super(key: key);
+
+  final List matches;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: matches
+          .map((e) => Match(
+              homeTeam: e["homeTeam"]["name"],
+              awayTeam: e["awayTeam"]["name"],
+              awayScore: e["score"]["fullTime"]["awayTeam"],
+              homeScore: e["score"]["fullTime"]["homeTeam"]))
+          .toList(),
     );
   }
 }
@@ -170,13 +190,15 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             //Text('$_data'),
-            Match(homeTeam: "psg", awayTeam: "city", homeScore: 1, awayScore: 0),
             FutureBuilder<Map>(
                 future: futureData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text(
-                        "${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
+                    //return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
+                    return Matches(
+                        matches: snapshot.data["matches"]
+                            .where((match) => match["matchday"] == 33)
+                            .toList());
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
