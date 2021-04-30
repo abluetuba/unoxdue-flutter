@@ -114,6 +114,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<Map> futureData;
   int _visibleMatchday;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -149,11 +150,20 @@ class _MyHomePageState extends State<MyHomePage> {
       _visibleMatchday--;
     });
   }
-    void nextMatchday() {
+
+  void nextMatchday() {
     setState(() {
       _visibleMatchday++;
     });
   }
+
+  void _onItemTapped(int index) {
+    print(index);
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   /*void _incrementCounter() async {
     var data = await fetchData();
     //print("id: ${data['id']}, title: ${data['title']}");
@@ -168,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _data = data['matches'][0]['season']['currentMatchday'].toString();
     });
   }*/
-
+ 
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -186,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child: _selectedIndex == 0 ?  Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -207,19 +217,11 @@ class _MyHomePageState extends State<MyHomePage> {
               'unoXdue',
               style: Theme.of(context).textTheme.headline4,
             ),*/
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                GestureDetector(
-                  child: Text("<<"), 
-                  onTap: previousMatchday
-                ),
-                Text('Giornata $_visibleMatchday'),
-                GestureDetector(
-                  child: Text(">>"), 
-                  onTap: nextMatchday
-                ),
-              ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              GestureDetector(child: Text("<<"), onTap: previousMatchday),
+              Text('Giornata $_visibleMatchday'),
+              GestureDetector(child: Text(">>"), onTap: nextMatchday),
+            ]),
             FutureBuilder<Map>(
                 future: futureData,
                 builder: (context, snapshot) {
@@ -234,10 +236,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Text("${snapshot.error}");
                   }
                   return CircularProgressIndicator();
-                })
+                }),
           ],
-        ),
+        )
+        : Text('Classifica')
+        
       ),
+      bottomNavigationBar:
+          BottomNavigationBar(items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.sports_soccer), label: 'Risultati'),
+        BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Classifica')
+      ], currentIndex: _selectedIndex, onTap: _onItemTapped),
       /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
