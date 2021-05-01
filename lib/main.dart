@@ -38,8 +38,8 @@ class Match extends StatelessWidget {
         Container(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              "$homeScore - $awayScore",
-              textAlign: TextAlign.center,
+              homeScore != null ? "$homeScore - $awayScore" : "   -   ",
+              //textAlign: TextAlign.center,
             )),
         Expanded(child: Text("$awayTeam", textAlign: TextAlign.start)),
       ],
@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final response = await http.get(
         //Uri.https(_API, "/v2/competitions/SA/matches"),
         Uri.http(_API, "matches.json"));
-    //headers: {"X-Auth-Token": _API_KEY});
+        //headers: {"X-Auth-Token": _API_KEY});
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       setVisibleMatchday(data["matches"][0]["season"]["currentMatchday"]);
@@ -145,20 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void previousMatchday() {
-    setState(() {
-      _visibleMatchday--;
-    });
-  }
-
-  void nextMatchday() {
-    setState(() {
-      _visibleMatchday++;
-    });
-  }
-
   void _onItemTapped(int index) {
-    print(index);
     setState(() {
       _selectedIndex = index;
     });
@@ -178,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _data = data['matches'][0]['season']['currentMatchday'].toString();
     });
   }*/
- 
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -194,58 +181,69 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: _selectedIndex == 0 ?  Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            /*Text(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: _selectedIndex == 0
+              ? Column(
+                  // Column is also a layout widget. It takes a list of children and
+                  // arranges them vertically. By default, it sizes itself to fit its
+                  // children horizontally, and tries to be as tall as its parent.
+                  //
+                  // Invoke "debug painting" (press "p" in the console, choose the
+                  // "Toggle Debug Paint" action from the Flutter Inspector in Android
+                  // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+                  // to see the wireframe for each widget.
+                  //
+                  // Column has various properties to control how it sizes itself and
+                  // how it positions its children. Here we use mainAxisAlignment to
+                  // center the children vertically; the main axis here is the vertical
+                  // axis because Columns are vertical (the cross axis would be
+                  // horizontal).
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    /*Text(
               'unoXdue',
               style: Theme.of(context).textTheme.headline4,
             ),*/
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              GestureDetector(child: Text("<<"), onTap: previousMatchday),
-              Text('Giornata $_visibleMatchday'),
-              GestureDetector(child: Text(">>"), onTap: nextMatchday),
-            ]),
-            FutureBuilder<Map>(
-                future: futureData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    //return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
-                    return Matches(
-                        matches: snapshot.data["matches"]
-                            .where((match) =>
-                                match["matchday"] == _visibleMatchday)
-                            .toList());
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return CircularProgressIndicator();
-                }),
-          ],
-        )
-        : Text('Classifica')
-        
-      ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(
+                              icon: const Icon(Icons.navigate_before),
+                              onPressed: () {
+                                setState(() {_visibleMatchday--;});
+                              }),
+                          Text('Giornata $_visibleMatchday', style: Theme.of(context).textTheme.headline6),
+                          IconButton(
+                              icon: const Icon(Icons.navigate_next),
+                              onPressed: () {
+                                setState(() {_visibleMatchday++;});
+                              }),
+                        ]),
+                    FutureBuilder<Map>(
+                        future: futureData,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            //return Text("${snapshot.data['matches'][0]['homeTeam']['name']} ${snapshot.data['matches'][0]['score']['fullTime']['homeTeam']} -  ${snapshot.data['matches'][0]['score']['fullTime']['awayTeam']} ${snapshot.data['matches'][0]['awayTeam']['name']}");
+                            return Matches(
+                                matches: snapshot.data["matches"]
+                                    .where((match) =>
+                                        match["matchday"] == _visibleMatchday)
+                                    .toList());
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        }),
+                  ],
+                )
+              : Text('Classifica', style: Theme.of(context).textTheme.headline6)),
       bottomNavigationBar:
           BottomNavigationBar(items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.sports_soccer), label: 'Risultati'),
-        BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Classifica')
+        BottomNavigationBarItem(
+            icon: Icon(Icons.sports_soccer), label: 'Risultati'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.leaderboard), label: 'Classifica')
       ], currentIndex: _selectedIndex, onTap: _onItemTapped),
       /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
