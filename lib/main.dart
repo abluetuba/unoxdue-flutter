@@ -3,22 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-//const String _API = "api.football-data.org";
-const String _API = "localhost:8080";
+import 'package:unoxdue/keys.dart';
 
-const String _API_KEY = "d4a62e8fd0e74363a70ad3bd67646d19";
+const String _API = "api.football-data.org";
+//const String _API = "localhost:8080";
 
-Future<Map> fetchData() async {
-  final response = await http.get(
-      Uri.https(_API, "/v2/competitions/SA/matches"),
-      headers: {"X-Auth-Token": _API_KEY});
-  if (response.statusCode == 200) {
-    Map<String, dynamic> data = jsonDecode(response.body);
-    return data;
-  } else {
-    throw Exception('Failed to fetch data');
-  }
-}
+const String _API_KEY = Keys.key;
 
 class Match extends StatelessWidget {
   const Match(
@@ -127,9 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Map> fetchData() async {
     final response = await http.get(
-        //Uri.https(_API, "/v2/competitions/SA/matches"),
-        Uri.http(_API, "matches.json"));
-        //headers: {"X-Auth-Token": _API_KEY});
+        Uri.https(_API, "/v2/competitions/SA/matches"),
+        //Uri.http(_API, "matches.json"));
+    headers: {"X-Auth-Token": _API_KEY});
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       setVisibleMatchday(data["matches"][0]["season"]["currentMatchday"]);
@@ -211,13 +201,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           IconButton(
                               icon: const Icon(Icons.navigate_before),
                               onPressed: () {
-                                setState(() {_visibleMatchday--;});
+                                setState(() {
+                                  _visibleMatchday--;
+                                });
                               }),
-                          Text('Giornata $_visibleMatchday', style: Theme.of(context).textTheme.headline6),
+                          Text('Giornata $_visibleMatchday',
+                              style: Theme.of(context).textTheme.headline6),
                           IconButton(
                               icon: const Icon(Icons.navigate_next),
                               onPressed: () {
-                                setState(() {_visibleMatchday++;});
+                                setState(() {
+                                  _visibleMatchday++;
+                                });
                               }),
                         ]),
                     FutureBuilder<Map>(
@@ -237,7 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         }),
                   ],
                 )
-              : Text('Classifica', style: Theme.of(context).textTheme.headline6)),
+              : Text('Classifica',
+                  style: Theme.of(context).textTheme.headline6)),
       bottomNavigationBar:
           BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
