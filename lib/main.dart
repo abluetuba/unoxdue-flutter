@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:unoxdue/keys.dart';
+import 'package:unoxdue/Standing.dart';
+//import 'package:unoxdue/keys.dart';
 
-const String _API = "api.football-data.org";
-//const String _API = "localhost:8080";
+//const String _API = "api.football-data.org";
+const String _API = "localhost:8080";
 
-const String _API_KEY = Keys.key;
+//const String _API_KEY = Keys.key;
 
 class Match extends StatelessWidget {
   const Match(
@@ -61,7 +62,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -95,14 +95,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Map> fetchData() async {
-    final response = await http.get(
-        Uri.https(_API, "/v2/competitions/SA/matches"),
-        //Uri.http(_API, "matches.json"));
-    headers: {"X-Auth-Token": _API_KEY});
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-      setVisibleMatchday(data["matches"][0]["season"]["currentMatchday"]);
-      return data;
+    final resMatches = await http.get(
+        //Uri.https(_API, "/v2/competitions/SA/matches"),
+        Uri.http(_API, "matches.json"));
+    //headers: {"X-Auth-Token": _API_KEY});
+    final resStandings = await http.get(
+        //Uri.https(_API, "/v2/competitions/SA/matches"),
+        Uri.http(_API, "standings.json"));
+    //headers: {"X-Auth-Token": _API_KEY});
+    if (resMatches.statusCode == 200 && resStandings.statusCode == 200) {
+      Map<String, dynamic> matchesData = jsonDecode(resMatches.body);
+      Map<String, dynamic> standingsData = jsonDecode(resStandings.body);
+      setVisibleMatchday(
+          matchesData["matches"][0]["season"]["currentMatchday"]);
+      return {...matchesData, ...standingsData};
     } else {
       throw Exception('Failed to fetch data');
     }
@@ -127,48 +133,57 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-          child: _selectedIndex == 0
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                              icon: const Icon(Icons.navigate_before),
-                              onPressed: () {
-                                setState(() {
-                                  _visibleMatchday--;
-                                });
-                              }),
-                          Text('Giornata $_visibleMatchday',
-                              style: Theme.of(context).textTheme.headline6),
-                          IconButton(
-                              icon: const Icon(Icons.navigate_next),
-                              onPressed: () {
-                                setState(() {
-                                  _visibleMatchday++;
-                                });
-                              }),
-                        ]),
-                    FutureBuilder<Map>(
-                        future: futureData,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Matches(
-                                matches: snapshot.data["matches"]
-                                    .where((match) =>
-                                        match["matchday"] == _visibleMatchday)
-                                    .toList());
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return CircularProgressIndicator();
-                        }),
-                  ],
-                )
-              : Text('Classifica',
-                  style: Theme.of(context).textTheme.headline6)),
+        child: _selectedIndex == 0
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                            icon: const Icon(Icons.navigate_before),
+                            onPressed: () {
+                              setState(() {
+                                _visibleMatchday--;
+                              });
+                            }),
+                        Text('Giornata $_visibleMatchday',
+                            style: Theme.of(context).textTheme.headline6),
+                        IconButton(
+                            icon: const Icon(Icons.navigate_next),
+                            onPressed: () {
+                              setState(() {
+                                _visibleMatchday++;
+                              });
+                            }),
+                      ]),
+                  FutureBuilder<Map>(
+                      future: futureData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Matches(
+                              matches: snapshot.data["matches"]
+                                  .where((match) =>
+                                      match["matchday"] == _visibleMatchday)
+                                  .toList());
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      }),
+                ],
+              )
+            : FutureBuilder<Map>(
+                future: futureData,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Standing(standings: snapshot.data["standings"]);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return CircularProgressIndicator();
+                }),
+      ),
       bottomNavigationBar:
           BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
