@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:unoxdue/Standing.dart';
+import 'package:unoxdue/Teams.dart';
 //import 'package:unoxdue/keys.dart';
 
 //const String _API = "api.football-data.org";
@@ -85,6 +87,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<Map> futureData;
+  Future<Map> futureTeams;
   int _visibleMatchday;
   int _selectedIndex = 0;
 
@@ -92,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     futureData = fetchData();
+    futureTeams = fetchTeams();
   }
 
   Future<Map> fetchData() async {
@@ -114,6 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<Map> fetchTeams() async {
+    final data = await rootBundle.loadString('assets/teams.json');
+    return jsonDecode(data);
+  }
+
   void setVisibleMatchday(int visibleMatchday) {
     setState(() {
       _visibleMatchday = visibleMatchday;
@@ -133,63 +142,66 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: _selectedIndex == 0
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                            icon: const Icon(Icons.navigate_before),
-                            onPressed: () {
-                              setState(() {
-                                _visibleMatchday--;
-                              });
-                            }),
-                        Text('Giornata $_visibleMatchday',
-                            style: Theme.of(context).textTheme.headline6),
-                        IconButton(
-                            icon: const Icon(Icons.navigate_next),
-                            onPressed: () {
-                              setState(() {
-                                _visibleMatchday++;
-                              });
-                            }),
-                      ]),
-                  FutureBuilder<Map>(
+          child: _selectedIndex == 0
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(
+                              icon: const Icon(Icons.navigate_before),
+                              onPressed: () {
+                                setState(() {
+                                  _visibleMatchday--;
+                                });
+                              }),
+                          Text('Giornata $_visibleMatchday',
+                              style: Theme.of(context).textTheme.headline6),
+                          IconButton(
+                              icon: const Icon(Icons.navigate_next),
+                              onPressed: () {
+                                setState(() {
+                                  _visibleMatchday++;
+                                });
+                              }),
+                        ]),
+                    FutureBuilder<Map>(
+                        future: futureData,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Matches(
+                                matches: snapshot.data["matches"]
+                                    .where((match) =>
+                                        match["matchday"] == _visibleMatchday)
+                                    .toList());
+                          } else if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          }
+                          return CircularProgressIndicator();
+                        }),
+                  ],
+                )
+              : _selectedIndex == 1
+                  ? FutureBuilder<Map>(
                       future: futureData,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return Matches(
-                              matches: snapshot.data["matches"]
-                                  .where((match) =>
-                                      match["matchday"] == _visibleMatchday)
-                                  .toList());
+                          return Standing(
+                              standings: snapshot.data["standings"]);
                         } else if (snapshot.hasError) {
                           return Text("${snapshot.error}");
                         }
                         return CircularProgressIndicator();
-                      }),
-                ],
-              )
-            : FutureBuilder<Map>(
-                future: futureData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Standing(standings: snapshot.data["standings"]);
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return CircularProgressIndicator();
-                }),
-      ),
+                      })
+                  : Teams(teams: futureTeams)),
       bottomNavigationBar:
           BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
             icon: Icon(Icons.sports_soccer), label: 'Risultati'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard), label: 'Classifica')
+            icon: Icon(Icons.leaderboard), label: 'Classifica'),
+        BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Squadre'),
       ], currentIndex: _selectedIndex, onTap: _onItemTapped),
     );
   }

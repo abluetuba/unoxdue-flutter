@@ -7,7 +7,11 @@ class Standing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Classifica', style: Theme.of(context).textTheme.headline6),
+        Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Column(
@@ -30,6 +34,7 @@ class Standing extends StatelessWidget {
           ]
         )
       ]
-    );
+    )
+  ]);
   }
 }
