@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unoxdue/constants.dart';
 
 class Standing extends StatelessWidget {
   const Standing({Key key, this.standings}) : super(key: key);
@@ -19,7 +20,7 @@ class Standing extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ...standings[0]["table"].map((e) => 
-              Text(e["team"]["name"])).toList()
+              Text(Constants.TEAMS[e["team"]["id"]])).toList()
           ]
         ),
         Column(

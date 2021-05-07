@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'unoXdue',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (resMatches.statusCode == 200 && resStandings.statusCode == 200) {
       Map<String, dynamic> matchesData = jsonDecode(resMatches.body);
       Map<String, dynamic> standingsData = jsonDecode(resStandings.body);
-    
+
       return {...matchesData, ...standingsData};
     } else {
       throw Exception('Failed to fetch data');
@@ -87,20 +87,21 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: true,
       ),
       body: Center(
           child: _selectedIndex == 0
               ? FutureBuilder<Map>(
-                      future: futureData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Scores(
-                              scoresData: snapshot.data["matches"]);
-                        } else if (snapshot.hasError) {
-                          return Text("${snapshot.error}");
-                        }
-                        return CircularProgressIndicator();
-                      })
+                  future: futureData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Scores(
+                          scoresData: snapshot.data["matches"]);
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
+                  })
               : _selectedIndex == 1
                   ? FutureBuilder<Map>(
                       future: futureData,
@@ -121,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         BottomNavigationBarItem(
             icon: Icon(Icons.leaderboard), label: 'Classifica'),
         BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Squadre'),
-      ], currentIndex: _selectedIndex, onTap: _onItemTapped),
+      ], currentIndex: _selectedIndex, onTap: _onItemTapped,),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unoxdue/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Scores extends StatefulWidget {
   Scores({Key key, this.scoresData}) : super(key: key);
@@ -14,25 +16,70 @@ class Match extends StatelessWidget {
       {Key key, this.homeTeam, this.awayTeam, this.homeScore, this.awayScore})
       : super(key: key);
 
-  final String homeTeam;
-  final String awayTeam;
+  final int homeTeam;
+  final int awayTeam;
   final int homeScore;
   final int awayScore;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    /*return Row(
       children: <Widget>[
-        Expanded(child: Text("$homeTeam", textAlign: TextAlign.end)),
+        Expanded(
+            child: Text(Constants.TEAMS[homeTeam], textAlign: TextAlign.end)),
         Container(
             padding: EdgeInsets.all(8.0),
             child: Text(
               homeScore != null ? "$homeScore - $awayScore" : "   -   ",
               //textAlign: TextAlign.center,
             )),
-        Expanded(child: Text("$awayTeam", textAlign: TextAlign.start)),
+        Expanded(
+            child: Text(Constants.TEAMS[awayTeam], textAlign: TextAlign.start)),
       ],
-    );
+    );*/
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+        child: Column(children: [
+          Row(
+            children: [
+              Container(
+                child: SvgPicture.asset("assets/crests/${homeTeam}.svg",
+                    height: 50),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+              Text(Constants.TEAMS[homeTeam]),
+              Expanded(
+                  child: Container(
+                child: Text(
+                  homeScore != null ? "$homeScore" : "-",
+                  textAlign: TextAlign.end,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 64),
+              ))
+            ],
+          ),
+          Divider(),
+          Row(
+            children: [
+              Container(
+                child: SvgPicture.asset("assets/crests/${awayTeam}.svg",
+                    height: 50),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+              Text(Constants.TEAMS[awayTeam]),
+              Expanded(
+                  child: Container(
+                child: Text(
+                  homeScore != null ? "$awayScore" : "-",
+                  textAlign: TextAlign.end,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 64),
+              ))
+            ],
+          ),
+        ]));
   }
 }
 
@@ -43,11 +90,11 @@ class Matches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: matches
           .map((e) => Match(
-              homeTeam: e["homeTeam"]["name"],
-              awayTeam: e["awayTeam"]["name"],
+              homeTeam: e["homeTeam"]["id"],
+              awayTeam: e["awayTeam"]["id"],
               awayScore: e["score"]["fullTime"]["awayTeam"],
               homeScore: e["score"]["fullTime"]["homeTeam"]))
           .toList(),
@@ -70,6 +117,18 @@ class _ScoresState extends State<Scores> {
     });
   }
 
+  void _incrementVisibleMatchday() {
+    setState(() {
+      _visibleMatchday++;
+    });
+  }
+
+  void _decrementVisibleMatchday() {
+    setState(() {
+      _visibleMatchday--;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -78,24 +137,24 @@ class _ScoresState extends State<Scores> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           IconButton(
               icon: const Icon(Icons.navigate_before),
-              onPressed: () {
-                setState(() {
-                  _visibleMatchday--;
-                });
-              }),
+              onPressed: _decrementVisibleMatchday),
           Text('Giornata $_visibleMatchday',
               style: Theme.of(context).textTheme.headline6),
           IconButton(
               icon: const Icon(Icons.navigate_next),
-              onPressed: () {
-                setState(() {
-                  _visibleMatchday++;
-                });
-              }),
+              onPressed: _incrementVisibleMatchday),
         ]),
-          Matches(matches: widget.scoresData
-            .where((match) => match["matchday"] == _visibleMatchday)
-            .toList())       
+        Expanded(
+            child: GestureDetector(
+          child: Matches(
+              matches: widget.scoresData
+                  .where((match) => match["matchday"] == _visibleMatchday)
+                  .toList()),
+          onHorizontalDragEnd: (DragEndDetails details) {
+            if (details.primaryVelocity > 0) _decrementVisibleMatchday();
+            else if (details.primaryVelocity < 0) _incrementVisibleMatchday();
+            },
+        ))
       ],
     );
   }
