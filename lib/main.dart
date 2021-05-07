@@ -6,58 +6,13 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:unoxdue/Standing.dart';
 import 'package:unoxdue/Teams.dart';
+import 'package:unoxdue/Scores.dart';
 //import 'package:unoxdue/keys.dart';
 
 //const String _API = "api.football-data.org";
-const String _API = "localhost:8080";
+const String _API = "192.168.1.56:8080";
 
 //const String _API_KEY = Keys.key;
-
-class Match extends StatelessWidget {
-  const Match(
-      {Key key, this.homeTeam, this.awayTeam, this.homeScore, this.awayScore})
-      : super(key: key);
-
-  final String homeTeam;
-  final String awayTeam;
-  final int homeScore;
-  final int awayScore;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(child: Text("$homeTeam", textAlign: TextAlign.end)),
-        Container(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              homeScore != null ? "$homeScore - $awayScore" : "   -   ",
-              //textAlign: TextAlign.center,
-            )),
-        Expanded(child: Text("$awayTeam", textAlign: TextAlign.start)),
-      ],
-    );
-  }
-}
-
-class Matches extends StatelessWidget {
-  const Matches({Key key, this.matches}) : super(key: key);
-
-  final List matches;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: matches
-          .map((e) => Match(
-              homeTeam: e["homeTeam"]["name"],
-              awayTeam: e["awayTeam"]["name"],
-              awayScore: e["score"]["fullTime"]["awayTeam"],
-              homeScore: e["score"]["fullTime"]["homeTeam"]))
-          .toList(),
-    );
-  }
-}
 
 void main() {
   runApp(MyApp());
@@ -88,7 +43,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<Map> futureData;
   Future<Map> futureTeams;
-  int _visibleMatchday;
   int _selectedIndex = 0;
 
   @override
@@ -110,8 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (resMatches.statusCode == 200 && resStandings.statusCode == 200) {
       Map<String, dynamic> matchesData = jsonDecode(resMatches.body);
       Map<String, dynamic> standingsData = jsonDecode(resStandings.body);
-      setVisibleMatchday(
-          matchesData["matches"][0]["season"]["currentMatchday"]);
+    
       return {...matchesData, ...standingsData};
     } else {
       throw Exception('Failed to fetch data');
@@ -121,12 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Map> fetchTeams() async {
     final data = await rootBundle.loadString('assets/teams.json');
     return jsonDecode(data);
-  }
-
-  void setVisibleMatchday(int visibleMatchday) {
-    setState(() {
-      _visibleMatchday = visibleMatchday;
-    });
   }
 
   void _onItemTapped(int index) {
@@ -143,45 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
           child: _selectedIndex == 0
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                              icon: const Icon(Icons.navigate_before),
-                              onPressed: () {
-                                setState(() {
-                                  _visibleMatchday--;
-                                });
-                              }),
-                          Text('Giornata $_visibleMatchday',
-                              style: Theme.of(context).textTheme.headline6),
-                          IconButton(
-                              icon: const Icon(Icons.navigate_next),
-                              onPressed: () {
-                                setState(() {
-                                  _visibleMatchday++;
-                                });
-                              }),
-                        ]),
-                    FutureBuilder<Map>(
-                        future: futureData,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Matches(
-                                matches: snapshot.data["matches"]
-                                    .where((match) =>
-                                        match["matchday"] == _visibleMatchday)
-                                    .toList());
-                          } else if (snapshot.hasError) {
-                            return Text("${snapshot.error}");
-                          }
-                          return CircularProgressIndicator();
-                        }),
-                  ],
-                )
+              ? FutureBuilder<Map>(
+                      future: futureData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Scores(
+                              scoresData: snapshot.data["matches"]);
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return CircularProgressIndicator();
+                      })
               : _selectedIndex == 1
                   ? FutureBuilder<Map>(
                       future: futureData,
