@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unoxdue/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:unoxdue/TeamDetails.dart';
 
 class Scores extends StatefulWidget {
   Scores({Key key, this.scoresData}) : super(key: key);
@@ -42,43 +43,64 @@ class Match extends StatelessWidget {
         decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
         child: Column(children: [
-          Row(
-            children: [
-              Container(
-                child: SvgPicture.asset("assets/crests/$homeTeam.svg",
-                    height: 50),
-                padding: EdgeInsets.symmetric(horizontal: 32),
-              ),
-              Text(Constants.TEAMS[homeTeam]),
-              Expanded(
-                  child: Container(
-                child: Text(
-                  homeScore != null ? "$homeScore" : "-",
-                  textAlign: TextAlign.end,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TeamDetails(teamId: homeTeam),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 64),
-              ))
-            ],
+              );
+            },
+            child: Row(
+              children: [
+                Container(
+                  child: SvgPicture.asset("assets/crests/$homeTeam.svg",
+                      height: 50),
+                  padding: EdgeInsets.symmetric(horizontal: 32),
+                ),
+                Text(Constants.TEAMS[homeTeam]),
+                Expanded(
+                    child: Container(
+                  child: Text(
+                    homeScore != null ? "$homeScore" : "-",
+                    textAlign: TextAlign.end,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 64),
+                ))
+              ],
+            ),
           ),
           Divider(),
-          Row(
-            children: [
-              Container(
-                child: SvgPicture.asset("assets/crests/$awayTeam.svg",
-                    height: 50),
-                padding: EdgeInsets.symmetric(horizontal: 32),
-              ),
-              Text(Constants.TEAMS[awayTeam]),
-              Expanded(
-                  child: Container(
-                child: Text(
-                  homeScore != null ? "$awayScore" : "-",
-                  textAlign: TextAlign.end,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TeamDetails(teamId: awayTeam),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 64),
-              ))
-            ],
-          ),
+              );
+            },
+            child: 
+              Row(
+                children: [
+                  Container(
+                    child:
+                        SvgPicture.asset("assets/crests/$awayTeam.svg", height: 50),
+                    padding: EdgeInsets.symmetric(horizontal: 32),
+                  ),
+                  Text(Constants.TEAMS[awayTeam]),
+                  Expanded(
+                      child: Container(
+                    child: Text(
+                      homeScore != null ? "$awayScore" : "-",
+                      textAlign: TextAlign.end,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 64),
+                  ))
+                ],
+              ),
+          )
         ]));
   }
 }
@@ -145,16 +167,16 @@ class _ScoresState extends State<Scores> {
               onPressed: _incrementVisibleMatchday),
         ]),
         Expanded(
-            child: GestureDetector(
+          //child: GestureDetector(
           child: Matches(
               matches: widget.scoresData
                   .where((match) => match["matchday"] == _visibleMatchday)
                   .toList()),
-          onHorizontalDragEnd: (DragEndDetails details) {
+          /*onHorizontalDragEnd: (DragEndDetails details) {
             if (details.primaryVelocity > 0) _decrementVisibleMatchday();
             else if (details.primaryVelocity < 0) _incrementVisibleMatchday();
-            },
-        ))
+            },*/
+        ) //)
       ],
     );
   }
