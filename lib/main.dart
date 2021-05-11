@@ -10,7 +10,7 @@ import 'package:unoxdue/Scores.dart';
 //import 'package:unoxdue/keys.dart';
 
 //const String _API = "api.football-data.org";
-const String _API = "192.168.1.56:8080";
+const String _API = "localhost:8080";
 
 //const String _API_KEY = Keys.key;
 
