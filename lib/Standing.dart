@@ -5,14 +5,16 @@ import 'package:unoxdue/TeamDetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StandingItem extends StatelessWidget {
-  const StandingItem({Key key, this.team, this.isFavourite}) : super(key: key);
+  const StandingItem({Key key, this.team, this.isFavourite, this.onBack})
+      : super(key: key);
 
   final Map team;
   final bool isFavourite;
+  final Function onBack;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
         onTap: () {
           if (team["team"]["id"] < 0) return;
           Navigator.push(
@@ -20,12 +22,16 @@ class StandingItem extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => TeamDetails(teamId: team["team"]["id"]),
             ),
-          );
+          ).then((value) {
+            onBack();
+          });
         },
         child: Container(
             padding: EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-                color: isFavourite == true ? Colors.orange[100] : Colors.transparent,
+                color: isFavourite == true
+                    ? Colors.orange[100]
+                    : Colors.transparent,
                 border: Border(
                     bottom: BorderSide(
                         width: 1,
@@ -51,7 +57,6 @@ class StandingItem extends StatelessWidget {
                   child: team["team"]["id"] != -1
                       ? SvgPicture.asset(
                           "assets/crests/${team["team"]["id"]}.svg",
-                          height: 25,
                         )
                       : SizedBox(),
                   padding: EdgeInsets.symmetric(horizontal: 8),
@@ -116,61 +121,71 @@ class Standing extends StatefulWidget {
 
 class StandingState extends State<Standing> {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  Future<List> _favouriteTeams;
+  Map _favouriteTeams =
+      Constants.TEAMS.map((key, value) => MapEntry(key, false));
 
-  Future<List> getFavouriteTeams() async {
+  Future<Map> getFavouriteTeams() async {
     final SharedPreferences prefs = await _prefs;
-    return widget.standings[0]["table"]
-        .map((e) => prefs.getBool(e["team"]["id"].toString()))
-        .toList();
+    Map favouriteTeams;
+
+    favouriteTeams = Constants.TEAMS.map(
+        (key, value) => MapEntry(key, prefs.getBool(key.toString()) ?? false));
+    
+    return favouriteTeams;
   }
 
   @override
   void initState() {
     super.initState();
-    _favouriteTeams = getFavouriteTeams();
+    setFavouriteTeams();
+  }
+
+  void setFavouriteTeams() {
+    getFavouriteTeams().then((value) {
+      setState(() {
+        _favouriteTeams = value;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: <
-        Widget>[
-      Container(
-        child: Text('Classifica', style: Theme.of(context).textTheme.headline6),
-        padding: EdgeInsets.symmetric(vertical: 10),
-      ),
-      Expanded(
-        child: ListView.builder(
-          itemCount: widget.standings[0]["table"].length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0)
-              return StandingItem(team: {
-                "position": -1,
-                "points": "Pt",
-                "won": "V",
-                "draw": "N",
-                "lost": "P",
-                "goalsFor": "GF",
-                "goalsAgainst": "GS",
-                "team": {"id": -1}
-              });
-            return FutureBuilder<List>(
-                future: _favouriteTeams,
-                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
+    return Container(
+        constraints: BoxConstraints(maxWidth: 600),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: Text('Classifica',
+                    style: Theme.of(context).textTheme.headline6),
+                padding: EdgeInsets.symmetric(vertical: 10),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: widget.standings[0]["table"].length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0)
+                      return StandingItem(team: {
+                        "position": -1,
+                        "points": "Pt",
+                        "won": "V",
+                        "draw": "N",
+                        "lost": "P",
+                        "goalsFor": "GF",
+                        "goalsAgainst": "GS",
+                        "team": {"id": -1}
+                      });
                     return StandingItem(
                       team: widget.standings[0]["table"][index - 1],
-                      isFavourite: snapshot.data[index - 1],
+                      isFavourite: _favouriteTeams[widget.standings[0]["table"]
+                          [index - 1]["team"]["id"]],
+                      onBack: () {
+                        setFavouriteTeams();
+                      },
                     );
-                  }
-                  return CircularProgressIndicator();
-                });
-            //StandingItem(team: widget.standings[0]["table"][index - 1]);
-          },
-        ),
-      )
-    ]);
+                  },
+                ),
+              )
+            ]));
   }
 }

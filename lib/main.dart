@@ -95,8 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   future: futureData,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Scores(
-                          scoresData: snapshot.data["matches"]);
+                      return Scores(scoresData: snapshot.data["matches"]);
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
@@ -115,14 +114,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         return CircularProgressIndicator();
                       })
                   : Teams(teams: futureTeams)),
-      bottomNavigationBar:
-          BottomNavigationBar(items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-            icon: Icon(Icons.sports_soccer), label: 'Risultati'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard), label: 'Classifica'),
-        BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Squadre'),
-      ], currentIndex: _selectedIndex, onTap: _onItemTapped,),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.sports_soccer), label: 'Risultati'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.leaderboard), label: 'Classifica'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Squadre'),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }

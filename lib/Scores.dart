@@ -21,27 +21,13 @@ class Match extends StatelessWidget {
   final int awayTeam;
   final int homeScore;
   final int awayScore;
-
   @override
   Widget build(BuildContext context) {
-    /*return Row(
-      children: <Widget>[
-        Expanded(
-            child: Text(Constants.TEAMS[homeTeam], textAlign: TextAlign.end)),
-        Container(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              homeScore != null ? "$homeScore - $awayScore" : "   -   ",
-              //textAlign: TextAlign.center,
-            )),
-        Expanded(
-            child: Text(Constants.TEAMS[awayTeam], textAlign: TextAlign.start)),
-      ],
-    );*/
     return Container(
         padding: EdgeInsets.symmetric(vertical: 16),
-        decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
+        ),
         child: Column(children: [
           InkWell(
             onTap: () {
@@ -81,25 +67,24 @@ class Match extends StatelessWidget {
                 ),
               );
             },
-            child: 
-              Row(
-                children: [
-                  Container(
-                    child:
-                        SvgPicture.asset("assets/crests/$awayTeam.svg", height: 50),
-                    padding: EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              children: [
+                Container(
+                  child: SvgPicture.asset("assets/crests/$awayTeam.svg",
+                      height: 50),
+                  padding: EdgeInsets.symmetric(horizontal: 32),
+                ),
+                Text(Constants.TEAMS[awayTeam]),
+                Expanded(
+                    child: Container(
+                  child: Text(
+                    homeScore != null ? "$awayScore" : "-",
+                    textAlign: TextAlign.end,
                   ),
-                  Text(Constants.TEAMS[awayTeam]),
-                  Expanded(
-                      child: Container(
-                    child: Text(
-                      homeScore != null ? "$awayScore" : "-",
-                      textAlign: TextAlign.end,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 64),
-                  ))
-                ],
-              ),
+                  padding: EdgeInsets.symmetric(horizontal: 64),
+                ))
+              ],
+            ),
           )
         ]));
   }
@@ -153,31 +138,28 @@ class _ScoresState extends State<Scores> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.navigate_before),
-              onPressed: _decrementVisibleMatchday),
-          Text('Giornata $_visibleMatchday',
-              style: Theme.of(context).textTheme.headline6),
-          IconButton(
-              icon: const Icon(Icons.navigate_next),
-              onPressed: _incrementVisibleMatchday),
-        ]),
-        Expanded(
-          //child: GestureDetector(
-          child: Matches(
-              matches: widget.scoresData
-                  .where((match) => match["matchday"] == _visibleMatchday)
-                  .toList()),
-          /*onHorizontalDragEnd: (DragEndDetails details) {
-            if (details.primaryVelocity > 0) _decrementVisibleMatchday();
-            else if (details.primaryVelocity < 0) _incrementVisibleMatchday();
-            },*/
-        ) //)
-      ],
-    );
+    return Container(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              IconButton(
+                  icon: const Icon(Icons.navigate_before),
+                  onPressed: _decrementVisibleMatchday),
+              Text('Giornata $_visibleMatchday',
+                  style: Theme.of(context).textTheme.headline6),
+              IconButton(
+                  icon: const Icon(Icons.navigate_next),
+                  onPressed: _incrementVisibleMatchday),
+            ]),
+            Expanded(
+              child: Matches(
+                  matches: widget.scoresData
+                      .where((match) => match["matchday"] == _visibleMatchday)
+                      .toList()),
+            )
+          ],
+        ));
   }
 }
