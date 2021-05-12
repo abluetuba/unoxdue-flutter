@@ -1,0 +1,95 @@
+{
+  "head2head": {
+    "numberOfMatches": 4,
+    "totalGoals": 11,
+    "homeTeam": {
+      "id": 107,
+      "name": "Genoa CFC",
+      "wins": 3,
+      "draws": 0,
+      "losses": 1
+    },
+    "awayTeam": {
+      "id": 488,
+      "name": "Spezia Calcio",
+      "wins": 1,
+      "draws": 0,
+      "losses": 3
+    }
+  },
+  "match": {
+    "id": 309916,
+    "competition": {
+      "id": 2019,
+      "name": "Serie A",
+      "area": {
+        "name": "Italy",
+        "code": "ITA",
+        "ensignUrl": "https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg"
+      }
+    },
+    "season": {
+      "id": 638,
+      "startDate": "2020-09-20",
+      "endDate": "2021-05-23",
+      "currentMatchday": 36,
+      "winner": null
+    },
+    "utcDate": "2021-04-24T13:00:00Z",
+    "status": "FINISHED",
+    "venue": "Stadio Luigi Ferraris",
+    "matchday": 33,
+    "stage": "REGULAR_SEASON",
+    "group": "Regular Season",
+    "lastUpdated": "2021-05-12T00:20:18Z",
+    "odds": { "msg": "Activate Odds-Package in User-Panel to retrieve odds." },
+    "score": {
+      "winner": "HOME_TEAM",
+      "duration": "REGULAR",
+      "fullTime": { "homeTeam": 2, "awayTeam": 0 },
+      "halfTime": { "homeTeam": 0, "awayTeam": 0 },
+      "extraTime": { "homeTeam": null, "awayTeam": null },
+      "penalties": { "homeTeam": null, "awayTeam": null }
+    },
+    "homeTeam": { "id": 107, "name": "Genoa CFC" },
+    "awayTeam": { "id": 488, "name": "Spezia Calcio" },
+    "referees": [
+      {
+        "id": 11008,
+        "name": "Damiano Di Iorio",
+        "role": "ASSISTANT_REFEREE_N1",
+        "nationality": "Italy"
+      },
+      {
+        "id": 57234,
+        "name": "Oreste Muto",
+        "role": "ASSISTANT_REFEREE_N2",
+        "nationality": "Italy"
+      },
+      {
+        "id": 11280,
+        "name": "Antonio Giua",
+        "role": "FOURTH_OFFICIAL",
+        "nationality": "Italy"
+      },
+      {
+        "id": 11072,
+        "name": "Gianluca Manganiello",
+        "role": "REFEREE",
+        "nationality": "Italy"
+      },
+      {
+        "id": 11053,
+        "name": "Daniele Chiffi",
+        "role": "VIDEO_ASSISANT_REFEREE_N1",
+        "nationality": "Italy"
+      },
+      {
+        "id": 11048,
+        "name": "Alberto Tegoni",
+        "role": "VIDEO_ASSISANT_REFEREE_N2",
+        "nationality": "Italy"
+      }
+    ]
+  }
+}

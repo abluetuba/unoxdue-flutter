@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unoxdue/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:unoxdue/TeamDetails.dart';
+import 'package:unoxdue/MatchDetails.dart';
 
 class Scores extends StatefulWidget {
   Scores({Key key, this.scoresData}) : super(key: key);
@@ -29,63 +29,43 @@ class Match extends StatelessWidget {
           border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
         ),
         child: Column(children: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TeamDetails(teamId: homeTeam),
+          Row(
+            children: [
+              Container(
+                child: SvgPicture.asset("assets/crests/$homeTeam.svg",
+                    height: 50),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+              Text(Constants.TEAMS[homeTeam]),
+              Expanded(
+                  child: Container(
+                child: Text(
+                  homeScore != null ? "$homeScore" : "-",
+                  textAlign: TextAlign.end,
                 ),
-              );
-            },
-            child: Row(
-              children: [
-                Container(
-                  child: SvgPicture.asset("assets/crests/$homeTeam.svg",
-                      height: 50),
-                  padding: EdgeInsets.symmetric(horizontal: 32),
-                ),
-                Text(Constants.TEAMS[homeTeam]),
-                Expanded(
-                    child: Container(
-                  child: Text(
-                    homeScore != null ? "$homeScore" : "-",
-                    textAlign: TextAlign.end,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 64),
-                ))
-              ],
-            ),
+                padding: EdgeInsets.symmetric(horizontal: 64),
+              ))
+            ],
           ),
           Divider(),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TeamDetails(teamId: awayTeam),
+          Row(
+            children: [
+              Container(
+                child: SvgPicture.asset("assets/crests/$awayTeam.svg",
+                    height: 50),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+              Text(Constants.TEAMS[awayTeam]),
+              Expanded(
+                  child: Container(
+                child: Text(
+                  homeScore != null ? "$awayScore" : "-",
+                  textAlign: TextAlign.end,
                 ),
-              );
-            },
-            child: Row(
-              children: [
-                Container(
-                  child: SvgPicture.asset("assets/crests/$awayTeam.svg",
-                      height: 50),
-                  padding: EdgeInsets.symmetric(horizontal: 32),
-                ),
-                Text(Constants.TEAMS[awayTeam]),
-                Expanded(
-                    child: Container(
-                  child: Text(
-                    homeScore != null ? "$awayScore" : "-",
-                    textAlign: TextAlign.end,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 64),
-                ))
-              ],
-            ),
-          )
+                padding: EdgeInsets.symmetric(horizontal: 64),
+              ))
+            ],
+          ),         
         ]));
   }
 }
@@ -99,11 +79,21 @@ class Matches extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: matches
-          .map((e) => Match(
+          .map((e) => InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MatchDetails(matchId: e["id"]),
+                ),
+              );
+            },
+            child: Match(
               homeTeam: e["homeTeam"]["id"],
               awayTeam: e["awayTeam"]["id"],
               awayScore: e["score"]["fullTime"]["awayTeam"],
               homeScore: e["score"]["fullTime"]["homeTeam"]))
+          )
           .toList(),
     );
   }

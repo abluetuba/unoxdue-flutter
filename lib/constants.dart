@@ -21,4 +21,6 @@ class Constants {
     1106: 'BENEVENTO',
     488: 'SPEZIA',
   };
+  //static const API = "api.football-data.org";
+  static const API = "localhost:8080";
 }
