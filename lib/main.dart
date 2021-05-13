@@ -7,12 +7,11 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:unoxdue/Standing.dart';
 import 'package:unoxdue/Scores.dart';
 import 'package:unoxdue/constants.dart';
-//import 'package:unoxdue/keys.dart';
+import 'package:unoxdue/keys.dart';
 
 //const String _API = "api.football-data.org";
 //const String _API = "localhost:8080";
 
-//const String _API_KEY = Keys.key;
 
 void main() {
   runApp(MyApp());
@@ -54,13 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Map> fetchData() async {
     final resMatches = await http.get(
-        //Uri.https(Constants.API, "/v2/competitions/SA/matches"),
-        Uri.http(Constants.API, "matches.json"));
-    //headers: {"X-Auth-Token": _API_KEY});
+      Uri.https(Constants.API, "/v2/competitions/SA/matches"),
+      //Uri.http(Constants.API, "matches.json"));
+      headers: {"X-Auth-Token": Keys.key});
     final resStandings = await http.get(
-        //Uri.https(ConstantsAPI, "/v2/competitions/SA/matches"),
-        Uri.http(Constants.API, "standings.json"));
-    //headers: {"X-Auth-Token": _API_KEY});
+      Uri.https(Constants.API, "/v2/competitions/SA/standings"),
+      //Uri.http(Constants.API, "standings.json"));
+      headers: {"X-Auth-Token": Keys.key});
     if (resMatches.statusCode == 200 && resStandings.statusCode == 200) {
       Map<String, dynamic> matchesData = jsonDecode(resMatches.body);
       Map<String, dynamic> standingsData = jsonDecode(resStandings.body);
