@@ -23,7 +23,8 @@ class MatchDetailsState extends State<MatchDetails> {
 
   Future<Map> fetchMatch(int matchId) async {
     final resMatch =
-        await http.get(Uri.https(Constants.API, "/v2/matches/$matchId"),
+        await http.get(
+            Uri.https(Constants.API, "/v2/matches/$matchId"),
             //Uri.http(Constants.API, "$matchId.json"));
             headers: {"X-Auth-Token": Keys.key});
 

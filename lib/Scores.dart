@@ -32,8 +32,10 @@ class Match extends StatelessWidget {
           Row(
             children: [
               Container(
-                child: SvgPicture.asset("assets/crests/$homeTeam.svg",
-                    height: 50),
+                child: SvgPicture.asset(
+                  "assets/crests/$homeTeam.svg",
+                  height: 50,
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 32),
               ),
               Text(Constants.TEAMS[homeTeam]),
@@ -51,8 +53,8 @@ class Match extends StatelessWidget {
           Row(
             children: [
               Container(
-                child: SvgPicture.asset("assets/crests/$awayTeam.svg",
-                    height: 50),
+                child:
+                    SvgPicture.asset("assets/crests/$awayTeam.svg", height: 50),
                 padding: EdgeInsets.symmetric(horizontal: 32),
               ),
               Text(Constants.TEAMS[awayTeam]),
@@ -65,7 +67,7 @@ class Match extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 64),
               ))
             ],
-          ),         
+          ),
         ]));
   }
 }
@@ -80,20 +82,19 @@ class Matches extends StatelessWidget {
     return ListView(
       children: matches
           .map((e) => InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MatchDetails(matchId: e["id"]),
-                ),
-              );
-            },
-            child: Match(
-              homeTeam: e["homeTeam"]["id"],
-              awayTeam: e["awayTeam"]["id"],
-              awayScore: e["score"]["fullTime"]["awayTeam"],
-              homeScore: e["score"]["fullTime"]["homeTeam"]))
-          )
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MatchDetails(matchId: e["id"]),
+                  ),
+                );
+              },
+              child: Match(
+                  homeTeam: e["homeTeam"]["id"],
+                  awayTeam: e["awayTeam"]["id"],
+                  awayScore: e["score"]["fullTime"]["awayTeam"],
+                  homeScore: e["score"]["fullTime"]["homeTeam"])))
           .toList(),
     );
   }
@@ -116,13 +117,19 @@ class _ScoresState extends State<Scores> {
 
   void _incrementVisibleMatchday() {
     setState(() {
-      _visibleMatchday++;
+      if (_visibleMatchday >= 38) {
+        _visibleMatchday = 1;
+      } else
+        _visibleMatchday++;
     });
   }
 
   void _decrementVisibleMatchday() {
     setState(() {
-      _visibleMatchday--;
+      if (_visibleMatchday <= 1)
+        _visibleMatchday = 38;
+      else
+        _visibleMatchday--;
     });
   }
 
