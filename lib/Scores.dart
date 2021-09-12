@@ -35,8 +35,9 @@ class Match extends StatelessWidget {
                 child: SvgPicture.asset(
                   "assets/crests/$homeTeam.svg",
                   height: 50,
+                  width: 50
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 32),
+                width: 114
               ),
               Text(Constants.TEAMS[homeTeam]),
               Expanded(
@@ -54,8 +55,8 @@ class Match extends StatelessWidget {
             children: [
               Container(
                 child:
-                    SvgPicture.asset("assets/crests/$awayTeam.svg", height: 50),
-                padding: EdgeInsets.symmetric(horizontal: 32),
+                    SvgPicture.asset("assets/crests/$awayTeam.svg", height: 50, width: 50),
+                width: 114,
               ),
               Text(Constants.TEAMS[awayTeam]),
               Expanded(

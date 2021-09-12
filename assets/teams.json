@@ -10,10 +10,10 @@
     "lastUpdated": "2021-04-17T07:19:44Z"
   },
   "season": {
-    "id": 638,
-    "startDate": "2020-09-20",
-    "endDate": "2021-05-23",
-    "currentMatchday": 34,
+    "id": 757,
+    "startDate": "2021-08-22",
+    "endDate": "2022-05-22",
+    "currentMatchday": 3,
     "winner": null
   },
   "teams": [
@@ -178,22 +178,6 @@
       "lastUpdated": "2020-11-26T02:19:41Z"
     },
     {
-      "id": 112,
-      "area": { "id": 2114, "name": "Italy" },
-      "name": "Parma Calcio 1913",
-      "shortName": "Parma",
-      "tla": "PAR",
-      "crestUrl": "https://crests.football-data.org/112.svg",
-      "address": "Strada Carlo Pisacane, 4 Parma 43121",
-      "phone": "+39 (521) 170591",
-      "website": "http://www.parmacalcio1913.com",
-      "email": "info@parmacalcio1913.com",
-      "founded": 1913,
-      "clubColors": "White / Black",
-      "venue": "Stadio Ennio Tardini",
-      "lastUpdated": "2020-11-26T02:19:43Z"
-    },
-    {
       "id": 113,
       "area": { "id": 2114, "name": "Italy" },
       "name": "SSC Napoli",
@@ -226,6 +210,22 @@
       "lastUpdated": "2020-11-26T02:19:45Z"
     },
     {
+      "id": 445,
+      "area": { "id": 2114, "name": "Italy" },
+      "name": "Empoli FC",
+      "shortName": "Empoli",
+      "tla": "EMP",
+      "crestUrl": "https://crests.football-data.org/445.svg",
+      "address": "Piazza Matteotti Empoli 50053",
+      "phone": "+39 (05) 7172212",
+      "website": "http://www.empolicalcio.net",
+      "email": "empoli@lega-calcio.it",
+      "founded": 1920,
+      "clubColors": "Blue / White",
+      "venue": "Stadio Carlo Castellani",
+      "lastUpdated": "2021-04-13T09:24:49Z"
+    },
+    {
       "id": 450,
       "area": { "id": 2114, "name": "Italy" },
       "name": "Hellas Verona FC",
@@ -242,6 +242,38 @@
       "lastUpdated": "2020-11-26T02:19:46Z"
     },
     {
+      "id": 454,
+      "area": { "id": 2114, "name": "Italy" },
+      "name": "Venezia FC",
+      "shortName": "Venezia FC",
+      "tla": "VEN",
+      "crestUrl": "https://crests.football-data.org/454.svg",
+      "address": "Viale Ancona, 43 Venezia 30172",
+      "phone": "+39 (41) 8477757",
+      "website": "http://www.veneziafc.club",
+      "email": "info@veneziafc.it",
+      "founded": 1907,
+      "clubColors": "Orange / Black / Green",
+      "venue": "Stadio Pierluigi Penzo",
+      "lastUpdated": "2020-11-19T02:16:26Z"
+    },
+    {
+      "id": 455,
+      "area": { "id": 2114, "name": "Italy" },
+      "name": "US Salernitana 1919",
+      "shortName": "Salernitana",
+      "tla": "SAL",
+      "crestUrl": "https://crests.football-data.org/455.svg",
+      "address": "Via San Leonardo, 51 Salerno 84131",
+      "phone": "+39 (089) 331743",
+      "website": "http://www.ussalernitana1919.it",
+      "email": "amministrazione@salernitana.it",
+      "founded": 1919,
+      "clubColors": null,
+      "venue": "Stadio Arechi",
+      "lastUpdated": "2020-11-19T02:16:27Z"
+    },
+    {
       "id": 471,
       "area": { "id": 2114, "name": "Italy" },
       "name": "US Sassuolo Calcio",
@@ -256,22 +288,6 @@
       "clubColors": "Green / Black",
       "venue": "Mapei Stadium - Città del Tricolore",
       "lastUpdated": "2021-04-12T13:07:30Z"
-    },
-    {
-      "id": 472,
-      "area": { "id": 2114, "name": "Italy" },
-      "name": "FC Crotone",
-      "shortName": "Crotone",
-      "tla": "CRO",
-      "crestUrl": "https://crests.football-data.org/472.svg",
-      "address": "Via Cutro Crotone 88900",
-      "phone": "+39 (0962) 28 919",
-      "website": "http://www.fccrotone.it",
-      "email": "info@fccrotone.it",
-      "founded": 1923,
-      "clubColors": "Blue / Red",
-      "venue": "Stadio Ezio Scida",
-      "lastUpdated": "2020-11-26T02:19:50Z"
     },
     {
       "id": 488,
@@ -320,22 +336,6 @@
       "clubColors": "Brown / White",
       "venue": "Stadio Olimpico di Torino",
       "lastUpdated": "2020-11-26T02:19:53Z"
-    },
-    {
-      "id": 1106,
-      "area": { "id": 2114, "name": "Italy" },
-      "name": "Benevento Calcio",
-      "shortName": "Benevento",
-      "tla": "BEN",
-      "crestUrl": "https://crests.football-data.org/1106.svg",
-      "address": "Via Santa Colomba 121 Benevento 82100",
-      "phone": "+39 (0824) 47922",
-      "website": "http://www.beneventocalciospa.it",
-      "email": "benevento.calcio@lega-calcio-serie-c.it",
-      "founded": 1929,
-      "clubColors": "Red / Yellow",
-      "venue": "Stadio Ciro Vigorito",
-      "lastUpdated": "2021-04-12T13:07:10Z"
     }
   ]
 }

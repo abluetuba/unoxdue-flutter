@@ -10,16 +10,16 @@ class Constants {
     108: 'INTER',
     109: 'JUVENTUS',
     110: 'LAZIO',
-    112: 'PARMA',
+    445: 'EMPOLI',
     113: 'NAPOLI',
     115: 'UDINESE',
-    472: 'CROTONE',
+    488: 'SPEZIA',
     450: 'VERONA',
     471: 'SASSUOLO',
     584: 'SAMPDORIA',
     586: 'TORINO',
-    1106: 'BENEVENTO',
-    488: 'SPEZIA',
+    455: 'SALERNITANA',
+    454: 'VENEZIA',
   };
   static const API = "api.football-data.org";
   //static const API = "localhost:8080";
