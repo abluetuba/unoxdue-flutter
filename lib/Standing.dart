@@ -67,43 +67,20 @@ class StandingItem extends StatelessWidget {
                 Expanded(
                     child: Row(
                   children: [
-                    Container(
-                      child: Text('${team["points"]}',
-                          textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                    Container(
-                      child:
-                          Text('${team["won"]}', textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                    Container(
-                      child:
-                          Text('${team["draw"]}', textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                    Container(
-                      child:
-                          Text('${team["lost"]}', textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                    Container(
-                      child: Text('${team["goalsFor"]}',
-                          textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                    Container(
-                      child: Text('${team["goalsAgainst"]}',
-                          textAlign: TextAlign.center),
-                      width: 30,
-                      padding: EdgeInsets.only(right: 4),
-                    ),
-                  ],
+                    "points",
+                    "won",
+                    "draw",
+                    "lost",
+                    "goalsFor",
+                    "goalsAgainst"
+                  ]
+                      .map((stat) => Container(
+                            child: Text('${team[stat]}',
+                                textAlign: TextAlign.center),
+                            width: 30,
+                            padding: EdgeInsets.only(right: 4),
+                          ))
+                      .toList(),
                   mainAxisAlignment: MainAxisAlignment.end,
                 ))
               ],
@@ -130,7 +107,7 @@ class StandingState extends State<Standing> {
 
     favouriteTeams = Constants.TEAMS.map(
         (key, value) => MapEntry(key, prefs.getBool(key.toString()) ?? false));
-    
+
     return favouriteTeams;
   }
 
